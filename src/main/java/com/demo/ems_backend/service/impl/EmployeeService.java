@@ -45,14 +45,21 @@ public class EmployeeService implements IEmployeeService {
 
     @Override
     public EmployeeDto updateEmployee(Long employeeId, EmployeeDto employeeDto) {
-        Employee employee = employeeRepository.findById(employeeId).orElseThrow(
+        Employee employeeToUpdate = employeeRepository.findById(employeeId).orElseThrow(
                 () -> new ResourceNotFoundException("Employee with id " + employeeId + " not found")
         );
-        employee.setFirstName(employeeDto.getFirstName());
-        employee.setLastName(employeeDto.getLastName());
-        employee.setEmail(employeeDto.getEmail());
-        Employee savedEmployee = employeeRepository.save(employee);
+        employeeToUpdate.setFirstName(employeeDto.getFirstName());
+        employeeToUpdate.setLastName(employeeDto.getLastName());
+        employeeToUpdate.setEmail(employeeDto.getEmail());
+        Employee savedEmployee = employeeRepository.save(employeeToUpdate);
         return EmployeeMapper.mapToEmployeeDto(savedEmployee);
+    }
+
+    @Override
+    public void deleteEmployee(Long employeeId) {
+        Employee employeeToDelete = employeeRepository.findById(employeeId)
+                .orElseThrow(() -> new ResourceNotFoundException("Employee with id " + employeeId + " not found"));
+        employeeRepository.delete(employeeToDelete);
     }
 
 }
